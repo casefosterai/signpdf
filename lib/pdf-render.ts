@@ -69,7 +69,10 @@ export async function renderPageToCanvas(
   if (!ctx) throw new Error("Could not get 2D context");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const task = page.render({ canvasContext: ctx, viewport, canvas });
+  // Pass only canvasContext + viewport. Older docs mentioned a `canvas` prop
+  // but the current pdfjs-dist typings don't include it — pdfjs reads the
+  // canvas from canvasContext.canvas internally.
+  const task = page.render({ canvasContext: ctx, viewport });
   if (onTaskStart) onTaskStart(task);
   await task.promise;
 }
